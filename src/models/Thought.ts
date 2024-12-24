@@ -28,7 +28,8 @@ const reactionSchema = new Schema<IReaction> (
         },
         username: {
             type: String,
-            required: true
+            required: true,
+            default: "Unattributed"
         },
         createdAt: {
             type: Date,
@@ -51,7 +52,8 @@ const thoughtSchema = new Schema<IThought>(
         },
         username: {
             type: String,
-            required: true
+            required: true,
+            default: "Unattributed"
         },
         reactions: [reactionSchema],
     },
