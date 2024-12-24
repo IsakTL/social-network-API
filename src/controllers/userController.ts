@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Thought, User } from '../models/index.js';
+import { User } from '../models/index.js';
 
 
 /**
@@ -42,104 +42,37 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 /**
- * POST Student /students
- * @param object student
- * @returns a single Student object
+ * POST user
+ * @param object user
+ * @returns a single user object
 */
 
-export const createStudent = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response) => {
     try {
-        const student = await Student.create(req.body);
-        res.json(student);
+        const user = await User.create(req.body);
+        res.json(user);
     } catch (err) {
         res.status(500).json(err);
     }
 }
+
 /**
- * DELETE Student based on id /students/:id
+ * DELETE user based on id /users/:id
  * @param string id
  * @returns string 
 */
 
-export const deleteStudent = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response) => {
     try {
-        const student = await Student.findOneAndDelete({ _id: req.params.studentId });
+        const user = await User.findOneAndDelete({ _id: req.params.userId });
 
-        if (!student) {
-            return res.status(404).json({ message: 'No such student exists' });
+        if (!user) {
+            return res.status(404).json({ message: `User with id ${req.params.userId} doesn't exist.` });
         }
 
-        const course = await Course.findOneAndUpdate(
-            { students: req.params.studentId },
-            { $pull: { students: req.params.studentId } },
-            { new: true }
-        );
-
-        if (!course) {
-            return res.status(404).json({
-                message: 'Student deleted, but no courses found',
-            });
-        }
-
-        return res.json({ message: 'Student successfully deleted' });
+        return res.json({ message: 'User successfully deleted.' });
     } catch (err) {
         console.log(err);
-        return res.status(500).json(err);
-    }
-}
-
-/**
- * POST Assignment based on /students/:studentId/assignments
- * @param string id
- * @param object assignment
- * @returns object student 
-*/
-
-export const addAssignment = async (req: Request, res: Response) => {
-    console.log('You are adding an assignment');
-    console.log(req.body);
-    try {
-        const student = await Student.findOneAndUpdate(
-            { _id: req.params.studentId },
-            { $addToSet: { assignments: req.body } },
-            { runValidators: true, new: true }
-        );
-
-        if (!student) {
-            return res
-                .status(404)
-                .json({ message: 'No student found with that ID :(' });
-        }
-
-        return res.json(student);
-    } catch (err) {
-        return res.status(500).json(err);
-    }
-}
-
-/**
- * DELETE Assignment based on /students/:studentId/assignments
- * @param string assignmentId
- * @param string studentId
- * @returns object student 
-*/
-
-export const removeAssignment = async (req: Request, res: Response) => {
-    try {
-        const student = await Student.findOneAndUpdate(
-            { _id: req.params.studentId },
-            { $pull: { assignments: { assignmentId: req.params.assignmentId } } },
-            { runValidators: true, new: true }
-        );
-
-        if (!student) {
-            return res
-                .status(404)
-                .json({ message: 'No student found with that ID :(' });
-        }
-
-        return res.json(student);
-    } catch (err) {
         return res.status(500).json(err);
     }
 }
