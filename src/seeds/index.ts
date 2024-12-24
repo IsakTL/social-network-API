@@ -1,7 +1,9 @@
 import db from '../config/connection.js';
 import { User } from '../models/index.js';
 import cleanDB from './cleanDB.js';
-import { getRandomName, getRandomThoughts } from './data.js';
+import { getRandomName } from './data.js';
+// getRandomThoughts not working as expected
+// import { getRandomThoughts } from './data.js';
 
 try {
   await db();
@@ -12,18 +14,17 @@ try {
 
   // Loop 20 times -- add users to the users array
   for (let i = 0; i < 20; i++) {
-    // Get random thought objects
-    const thoughts = getRandomThoughts(2);
+    // Get random thought objects - not currently working
+    // const thoughts = getRandomThoughts(2);
 
     const first = getRandomName();
     const last = getRandomName();
     const username = first + last;
-    const email = `${first}${last[0]}@mail.ml`;
+    const email = `${first+last[0]}${(Math.random()*10)|0}@mail.ml`;
 
     users.push({
       username,
-      email,
-      thoughts
+      email
     });
   }
 
